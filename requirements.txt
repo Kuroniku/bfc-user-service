@@ -4,9 +4,10 @@ uvicorn
 
 # Data
 psycopg2
-psycopg2-binary
+asyncpg
 SQLAlchemy
 pydantic
+pydantic-settings
 
 # Utils
 loguru
