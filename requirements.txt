@@ -1,0 +1,12 @@
+# Rest
+fastapi
+uvicorn
+
+# Data
+psycopg2
+psycopg2-binary
+SQLAlchemy
+pydantic
+
+# Utils
+loguru

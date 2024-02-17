@@ -1,0 +1,4 @@
+from .extra_handlers import extras_router
+from .user_handlers import user_router
+from .friends_relations_handlers import friends_relations_router
+from .subscribe_relations_handlers import subscribe_relations_router
