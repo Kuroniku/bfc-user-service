@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import Column, DateTime, Text, String
+from sqlalchemy import Column, DateTime, Text, String, Date
 from sqlalchemy.orm import Mapped
 
 from .base import BaseModel, TimestampedModelMixin
@@ -20,8 +20,8 @@ class UserModel(BaseModel, TimestampedModelMixin):
         nullable=True,
         default=None
     )
-    birthday: Mapped[datetime.datetime] = Column(
-        DateTime,
+    birthday: Mapped[datetime.date] = Column(
+        Date,
         nullable=True,
     )
 
