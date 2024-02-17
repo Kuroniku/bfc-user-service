@@ -5,7 +5,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped
 
 
 class BaseModel(DeclarativeBase):
-    id: Mapped[int] = Column(Integer, primary_key=True)
+    id: Mapped[int] = Column(Integer, primary_key=True, autoincrement=True)
 
 
 class TimestampedModelMixin(object):

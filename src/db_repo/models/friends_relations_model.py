@@ -10,7 +10,8 @@ class FriendsRelationsModel(BaseModel, TimestampedModelMixin):
 
     id: Mapped[int] = Column(
         BigInteger,
-        primary_key=True
+        primary_key=True,
+        autoincrement=True
     )
 
     user_1_id: Mapped[int] = Column(

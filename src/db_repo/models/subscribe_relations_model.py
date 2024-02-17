@@ -10,7 +10,8 @@ class SubscribeRelationsModel(BaseModel, TimestampedModelMixin):
 
     id: Mapped[int] = Column(
         BigInteger,
-        primary_key=True
+        primary_key=True,
+        autoincrement=True
     )
 
     user_id: Mapped[int] = Column(
