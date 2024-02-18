@@ -26,7 +26,7 @@ class CustomApp(FastAPI):
 
         self.add_exception_handler(RequestValidationError, self._handle_validation_error)
         self.add_exception_handler(BaseHTTPException, self._handle_base_http_exception)
-        self.add_exception_handler(Exception, self._handle_validation_error)
+        self.add_exception_handler(Exception, self._handle_unknown_error)
 
     @staticmethod
     def _handle_validation_error(request, exc):

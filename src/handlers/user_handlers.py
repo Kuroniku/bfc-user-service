@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app import EntityAlreadyExistsError, EntityDoesNotExistError
-from src.models import get_session
+from src.models import db_manager
 from src.repos import UserRepo
 from src.dto import UserFullDTO, UserPutDTO, UserPatchDTO
 
@@ -17,7 +17,7 @@ user_router = APIRouter(
 )
 async def create_user(
         user: UserFullDTO,
-        session: AsyncSession = Depends(get_session)
+        session: AsyncSession = Depends(db_manager.get_session)
 ) -> UserFullDTO:
     try:
         return await UserRepo.create_new_entity(session, user)
@@ -30,7 +30,7 @@ async def create_user(
 )
 async def get_user(
         user_id: int,
-        session: AsyncSession = Depends(get_session)
+        session: AsyncSession = Depends(db_manager.get_session)
 ) -> UserFullDTO:
     try:
         return await UserRepo.get_by_id(session, user_id)
@@ -43,7 +43,7 @@ async def get_user(
 )
 async def get_user(
         link: str,
-        session: AsyncSession = Depends(get_session)
+        session: AsyncSession = Depends(db_manager.get_session)
 ) -> UserFullDTO:
     try:
         return await UserRepo.get_by_link(session, link)
@@ -57,7 +57,7 @@ async def get_user(
 async def put_user_data(
         user_id: int,
         user: UserPutDTO,
-        session: AsyncSession = Depends(get_session)
+        session: AsyncSession = Depends(db_manager.get_session)
 ) -> UserFullDTO:
     try:
         return await UserRepo.update_from_dto(session, user_id, user)
@@ -71,7 +71,7 @@ async def put_user_data(
 async def patch_user_data(
         user_id: int,
         user: UserPatchDTO,
-        session: AsyncSession = Depends(get_session)
+        session: AsyncSession = Depends(db_manager.get_session)
 ) -> UserFullDTO:
     try:
         return await UserRepo.update_from_dto(session, user_id, user)

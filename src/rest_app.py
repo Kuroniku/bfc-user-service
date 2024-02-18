@@ -1,14 +1,19 @@
+import contextlib
+
 from src.app import CustomApp
 from src.handlers import extras_router, user_router, friends_relations_router, subscribe_relations_router
-from src.repos import create_tables
-
-app = CustomApp()
+from src.models import db_manager
 
 
-@app.on_event("startup")
-async def create_db():
-    await create_tables()
+@contextlib.asynccontextmanager
+async def create_db(app):
+    db_manager.init()
+    await db_manager.create_tables()
+    yield
+    await db_manager.close()
 
+
+app = CustomApp(lifespan=create_db)
 
 app.include_router(
     extras_router
