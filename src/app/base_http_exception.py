@@ -4,12 +4,12 @@ from fastapi.responses import JSONResponse
 
 class ErrorContent(BaseModel):
     service_name: str
-    message: str
+    message: str | list | dict
     error_code: int
 
 
-class BaseResultException(Exception):
-    _service_name = "Gateway"
+class BaseHTTPException(Exception):
+    _service_name = "user-service"
     _message = "Base Exception"
     _error_code = -1
 
@@ -27,7 +27,7 @@ class BaseResultException(Exception):
                 service_name=_service_name,
                 message=_message,
                 error_code=_error_code,
-            )
+            ).dict()
             super().__init__(content, status_code)
 
     def __init__(self):
@@ -41,10 +41,5 @@ class BaseResultException(Exception):
             self._service_name,
             self._message,
             self._error_code,
-            self._http_code
+            self._status_code
         )
-
-    @classmethod
-    @property
-    def error_code(cls):
-        return cls._error_code
