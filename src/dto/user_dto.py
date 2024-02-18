@@ -6,12 +6,10 @@ import pydantic
 from pydantic import Field, field_validator
 from pydantic_core.core_schema import ValidationInfo
 
-from src.db_repo import UserModel
+from src.models import UserModel
 
 
-class UserData(pydantic.BaseModel):
-    id: int | None = Field(default=None)
-
+class UserPutDTO(pydantic.BaseModel):
     firstname: str
     lastname: str
     description: str | None = Field(default=None)
@@ -101,9 +99,52 @@ class UserData(pydantic.BaseModel):
 
     def dict(self, *args, **kwargs) -> typing.Dict[str, Any]:
         dict_ = super().dict(*args, **kwargs)
-        if self.id is None:
-            dict_.pop("id")
-        if self.description is None:
-            dict_.pop("description")
+        return {
+            field_name: dict_[field_name]
+            for field_name in self.__fields_set__
+            if dict_[field_name] is not None
+        }
 
-        return dict_
+
+class UserPatchDTO(UserPutDTO):
+    firstname: str | None = Field(default=None)
+    lastname: str | None = Field(default=None)
+    description: str | None = Field(default=None)
+    birthday: datetime.date | None = Field(default=None)
+
+    profile_link: str | None = Field(default=None)
+    phone: str | None = Field(default=None)
+
+    @field_validator('firstname')
+    def _check_firstname(cls, v: str, info: ValidationInfo) -> str | None:
+        if v is None:
+            return v
+        return super()._check_firstname(v, info)
+
+    @field_validator('lastname')
+    def _check_lastname(cls, v: str, info: ValidationInfo) -> str | None:
+        if v is None:
+            return v
+        return super()._check_lastname(v, info)
+
+    @field_validator("birthday")
+    def _check_birthday(cls, v: datetime.date) -> datetime.date | None:
+        if v is None:
+            return v
+        return super()._check_birthday(v)
+
+    @field_validator('profile_link')
+    def _check_profile_link(cls, v: str, info: ValidationInfo) -> str | None:
+        if v is None:
+            return v
+        return super()._check_profile_link(v, info)
+
+    @field_validator('phone')
+    def _check_phone(cls, v: str, info: ValidationInfo) -> str | None:
+        if v is None:
+            return v
+        return super()._check_phone(v, info)
+
+
+class UserFullDTO(UserPutDTO):
+    id: int | None = Field(default=None)

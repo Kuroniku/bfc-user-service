@@ -28,12 +28,10 @@ class UserModel(BaseModel, TimestampedModelMixin):
     profile_link: Mapped[str] = Column(
         String(42),
         nullable=True,
-        default=None
     )
     phone: Mapped[str] = Column(
         String(11),
         nullable=True,
-        default=None
     )
 
     deleted_at: Mapped[datetime.datetime | None] = Column(
