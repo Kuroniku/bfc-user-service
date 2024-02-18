@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.app import EntityAlreadyExistsError, EntityDoesNotExistError
 from src.models import get_session
 from src.repos import UserRepo
 from src.dto import UserFullDTO, UserPutDTO, UserPatchDTO
@@ -18,7 +19,10 @@ async def create_user(
         user: UserFullDTO,
         session: AsyncSession = Depends(get_session)
 ) -> UserFullDTO:
-    return await UserRepo.create_new_entity(session, user)
+    try:
+        return await UserRepo.create_new_entity(session, user)
+    except UserRepo.EntityAlreadyExists as e:
+        raise EntityAlreadyExistsError(e.model)
 
 
 @user_router.get(
@@ -28,7 +32,10 @@ async def get_user(
         user_id: int,
         session: AsyncSession = Depends(get_session)
 ) -> UserFullDTO:
-    return await UserRepo.get_by_id(session, user_id)
+    try:
+        return await UserRepo.get_by_id(session, user_id)
+    except UserRepo.EntityDoesNotExists as e:
+        raise EntityDoesNotExistError(e.model)
 
 
 @user_router.get(
@@ -38,7 +45,10 @@ async def get_user(
         link: str,
         session: AsyncSession = Depends(get_session)
 ) -> UserFullDTO:
-    return await UserRepo.get_by_link(session, link)
+    try:
+        return await UserRepo.get_by_link(session, link)
+    except UserRepo.EntityDoesNotExists as e:
+        raise EntityDoesNotExistError(e.model)
 
 
 @user_router.put(
@@ -49,7 +59,10 @@ async def put_user_data(
         user: UserPutDTO,
         session: AsyncSession = Depends(get_session)
 ) -> UserFullDTO:
-    return await UserRepo.update_from_dto(session, user_id, user)
+    try:
+        return await UserRepo.update_from_dto(session, user_id, user)
+    except UserRepo.EntityDoesNotExists as e:
+        raise EntityDoesNotExistError(e.model)
 
 
 @user_router.patch(
@@ -60,4 +73,7 @@ async def patch_user_data(
         user: UserPatchDTO,
         session: AsyncSession = Depends(get_session)
 ) -> UserFullDTO:
-    return await UserRepo.update_from_dto(session, user_id, user)
+    try:
+        return await UserRepo.update_from_dto(session, user_id, user)
+    except UserRepo.EntityDoesNotExists as e:
+        raise EntityDoesNotExistError(e.model)
