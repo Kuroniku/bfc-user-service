@@ -35,9 +35,13 @@ class BaseRepo:
         try:
             await session.commit()
             return cls._create_dto(new_entity)
-        except IntegrityError:
+        except IntegrityError as ex:
             await session.rollback()
-            raise cls.EntityAlreadyExists(cls._model)
+
+            if "duplicate key value violates unique constraint" in ex.args[0]:
+                raise cls.EntityAlreadyExists(cls._model)
+            else:
+                raise ex
         except Exception as ex:
             await session.rollback()
             raise ex

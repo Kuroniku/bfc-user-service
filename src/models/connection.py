@@ -22,7 +22,6 @@ class DatabaseSessionManager:
     _session_maker: Optional[async_sessionmaker[AsyncSession]]
 
     def init(self) -> None:
-        print("Inited")
         self._engine = create_async_engine(
             url=env_config.async_psql_url,
             pool_pre_ping=True,
@@ -38,7 +37,6 @@ class DatabaseSessionManager:
             await conn.run_sync(BaseModel.metadata.create_all)
 
     async def close(self) -> None:
-        print("Closed")
         if self._engine is None:
             return
         await self._engine.dispose()
