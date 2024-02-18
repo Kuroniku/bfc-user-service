@@ -15,6 +15,12 @@ class BaseRepo:
             super().__init__(*args)
             self.model = _model
 
+    class DuplicatesOfUniqueFieldError(Exception):
+        def __init__(self, _model, field_name, *args):
+            super().__init__(*args)
+            self.model = _model
+            self.field_name = field_name
+
     class EntityDoesNotExists(Exception):
         def __init__(self, _model, *args):
             super().__init__(*args)
@@ -37,9 +43,13 @@ class BaseRepo:
             return cls._create_dto(new_entity)
         except IntegrityError as ex:
             await session.rollback()
-
-            if "duplicate key value violates unique constraint" in ex.args[0]:
+            print(ex)
+            if "_pkey" in ex.args[0]:
                 raise cls.EntityAlreadyExists(cls._model)
+            elif "duplicate key value violates unique constraint" in ex.args[0]:
+                raise cls.DuplicatesOfUniqueFieldError(
+                    cls._model
+                )
             else:
                 raise ex
         except Exception as ex:

@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import Column, DateTime, Text, String, Date
+from sqlalchemy import Column, DateTime, Text, String, Date, func
 from sqlalchemy.orm import Mapped
 
 from .base import BaseModel, TimestampedModelMixin
@@ -27,6 +27,7 @@ class UserModel(BaseModel, TimestampedModelMixin):
 
     profile_link: Mapped[str] = Column(
         String(42),
+        unique=True,
         nullable=True,
     )
     phone: Mapped[str] = Column(

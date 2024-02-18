@@ -15,7 +15,7 @@ class UserPutDTO(pydantic.BaseModel):
     description: str | None = Field(default=None)
     birthday: datetime.date
 
-    profile_link: str
+    profile_link: str | None = Field(default=None)
     phone: str
 
     @classmethod
@@ -63,7 +63,9 @@ class UserPutDTO(pydantic.BaseModel):
         return v
 
     @field_validator('profile_link')
-    def _check_profile_link(cls, v: str, info: ValidationInfo) -> str:
+    def _check_profile_link(cls, v: str | None, info: ValidationInfo) -> str | None:
+        if v is None:
+            return v
         cls._check_is_alphanumeric(v, info)
         cls._check_no_longer(
             length=UserModel.profile_link.property.columns[0].type.length,
