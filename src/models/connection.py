@@ -25,10 +25,11 @@ class DatabaseSessionManager:
         self._engine = create_async_engine(
             url=env_config.async_psql_url,
             pool_pre_ping=True,
+            # echo=True
         )
         self._session_maker = async_sessionmaker(
             bind=self._engine,
-            expire_on_commit=False,
+            expire_on_commit=False
         )
 
     async def create_tables(self):

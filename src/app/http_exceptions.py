@@ -65,3 +65,17 @@ class EntityAlreadyExistsError(BaseHTTPException):
     ):
         super().__init__()
         self._message = f"Entity is already exist in table {model_class.__tablename__}"
+
+
+class DuplicateEntityError(BaseHTTPException):
+    _message = f""
+    _error_code = 4
+    _status_code = 400
+
+    def __init__(
+            self,
+            model_class: Type[BaseModel],
+            fieldname: str
+    ):
+        super().__init__()
+        self._message = f"Entity with that value of {fieldname} is already exist in table {model_class.__tablename__}"

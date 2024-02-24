@@ -26,7 +26,12 @@ class UserPutDTO(pydantic.BaseModel):
     @classmethod
     def _check_is_alphanumeric(cls, v: str, info: ValidationInfo):
         if not v.isalnum():
-            raise ValueError(f'{info.field_name} must not contain numbers')
+            raise ValueError(f'{info.field_name} must contain only numbers or alphabet')
+
+    @classmethod
+    def _check_is_numeric(cls, v: str, info: ValidationInfo):
+        if not v.isnumeric():
+            raise ValueError(f"{info.field_name} must contain only numbers or symbols +-() ")
 
     @classmethod
     def _check_no_longer(cls, length: int, v: str, info: ValidationInfo):
@@ -89,8 +94,8 @@ class UserPutDTO(pydantic.BaseModel):
     def _check_phone(cls, v: str, info: ValidationInfo) -> str:
         if len(v) > 100:
             raise ValueError(f'{info.field_name} is too long!')
-
-        cls._check_is_alphanumeric(v, info)
+        v = cls._cleanup_phone_number(v)
+        cls._check_is_numeric(v, info)
         cls._check_no_longer(
             length=UserModel.phone.property.columns[0].type.length,
             v=v,
